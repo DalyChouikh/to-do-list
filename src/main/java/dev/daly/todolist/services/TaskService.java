@@ -60,17 +60,6 @@ public class TaskService {
         }
         return new ResponseEntity<>(taskRepository.findTasksByTitleContainsAndStatus(keyword, statusEnum), HttpStatus.OK);
     }
-    public ResponseEntity<?> getTasksByStatus(String status){
-        Status statusEnum;
-        if(status.toLowerCase().contains("progress")){
-            statusEnum = Status.IN_PROGRESS;
-        }else if(status.toLowerCase().contains("done")) {
-            statusEnum = Status.DONE;
-        }else{
-            return new ResponseEntity<>("Invalid status. Status must be either In Progress or Done", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(taskRepository.findTasksByStatus(statusEnum), HttpStatus.OK);
-    }
     public ResponseEntity<String> updateTask(Long taskId, TaskRequest taskRequest) {
         Optional<Task> task = taskRepository.findById(taskId);
         if(task.isEmpty()){
