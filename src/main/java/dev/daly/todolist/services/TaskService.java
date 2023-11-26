@@ -27,8 +27,13 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public Task getTaskById(Long id){
-        return taskRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Task with ID " + id + " not found"));
+    public ResponseEntity<?> getTaskById(Long id){
+        Optional<Task> task = taskRepository.findById(id);
+        if(task.isEmpty()){
+            return new ResponseEntity<>("Task with ID " + id + " not found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(task.get(), HttpStatus.OK);
+
     }
     public List<Task> getTasksByTitle(String keyword){
         return  taskRepository.findTasksByTitleContains(keyword);
