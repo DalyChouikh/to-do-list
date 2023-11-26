@@ -17,5 +17,5 @@ public class TaskRequest {
     @NonNull
     private Status status;
     @NonNull
-    private LocalDate dueDate;
+    private String dueDate;
 }
