@@ -10,6 +10,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "task")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
