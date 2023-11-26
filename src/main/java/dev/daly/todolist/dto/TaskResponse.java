@@ -1,2 +1,4 @@
-package dev.daly.todolist.dto;public class TaskResponse {
+package dev.daly.todolist.dto;
+
+public class TaskResponse {
 }
