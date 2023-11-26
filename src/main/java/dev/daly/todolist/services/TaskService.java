@@ -65,7 +65,11 @@ public class TaskService {
     public Task createOrUpdateTask(Task task){
         return taskRepository.save(task);
     }
-    public void deleteTask(Long taskId) {
+    public ResponseEntity<String> deleteTask(Long taskId) {
+        if(!taskRepository.existsById(taskId)){
+            return new ResponseEntity<>("Task with ID " + taskId + " doesn't exist", HttpStatus.NOT_FOUND);
+        }
         taskRepository.deleteById(taskId);
+        return new ResponseEntity<>("Task with ID " + taskId + " deleted successfully", HttpStatus.OK);
     }
 }
