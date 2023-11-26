@@ -1,4 +1,4 @@
-package com.dalycode.todolist.models;
+package dev.daly.todolist.models;
 
 import jakarta.persistence.*;
 import lombok.*;

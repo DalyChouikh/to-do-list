@@ -1,7 +1,7 @@
-package com.dalycode.todolist.Controller;
+package dev.daly.todolist.Controller;
 
-import com.dalycode.todolist.models.Task;
-import com.dalycode.todolist.services.TaskService;
+import dev.daly.todolist.models.Task;
+import dev.daly.todolist.services.TaskService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

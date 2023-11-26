@@ -1,6 +1,6 @@
-package com.dalycode.todolist.repository;
+package dev.daly.todolist.repository;
 
-import com.dalycode.todolist.models.Task;
+import dev.daly.todolist.models.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

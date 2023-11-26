@@ -1,4 +1,4 @@
-package com.dalycode.todolist.models;
+package dev.daly.todolist.models;
 
 public enum Status {
     PENDING,

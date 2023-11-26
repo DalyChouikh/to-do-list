@@ -1,8 +1,8 @@
-package com.dalycode.todolist.services;
+package dev.daly.todolist.services;
 
-import com.dalycode.todolist.models.Status;
-import com.dalycode.todolist.models.Task;
-import com.dalycode.todolist.repository.TaskRepository;
+import dev.daly.todolist.models.Status;
+import dev.daly.todolist.models.Task;
+import dev.daly.todolist.repository.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional

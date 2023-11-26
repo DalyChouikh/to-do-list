@@ -1,4 +1,4 @@
-package com.dalycode.todolist;
+package dev.daly.todolist;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
