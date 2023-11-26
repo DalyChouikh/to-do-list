@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -25,12 +26,18 @@ public class TaskService {
         return taskRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Task with ID " + id + " not found"));
     }
 
-    public List<Task> getTasksByDescription(String keyword){
-        return  taskRepository.findTasksByDescriptionContains(keyword);
+    public List<Task> getTasksByTitle(String keyword){
+        return  taskRepository.findTasksByTitleContains(keyword);
     }
 
-    public Task createTask(String description, Status status, Date dueDate){
-        return  taskRepository.save(new Task(description, status, dueDate));
+    public Task createTask(String title, String description, Status status, LocalDate dueDate){
+        Task task = Task.builder()
+                .title(title)
+                .description(description)
+                .status(status)
+                .dueDate(dueDate)
+                .build();
+        return  taskRepository.save(task);
     }
 
     public Task createOrUpdateTask(Task task){
