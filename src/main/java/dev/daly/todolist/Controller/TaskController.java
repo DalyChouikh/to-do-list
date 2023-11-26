@@ -30,9 +30,8 @@ public class TaskController {
     }
 
     @GetMapping("/{task_id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long task_id){
-
-        return new ResponseEntity<>(taskService.getTaskById(task_id), HttpStatus.OK);
+    public ResponseEntity<?> getTaskById(@PathVariable Long task_id){
+        return taskService.getTaskById(task_id);
     }
 
     @PostMapping("/create")
