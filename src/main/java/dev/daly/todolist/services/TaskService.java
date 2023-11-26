@@ -30,17 +30,11 @@ public class TaskService {
         return  taskRepository.findTasksByTitleContains(keyword);
     }
 
-    public Task createTask(String title, String description, Status status, LocalDate dueDate){
-        Task task = Task.builder()
-                .title(title)
-                .description(description)
-                .status(status)
-                .dueDate(dueDate)
-                .build();
-        return  taskRepository.save(task);
-    }
-
     public Task createOrUpdateTask(Task task){
         return taskRepository.save(task);
+    }
+
+    public void deleteTask(Long taskId) {
+        taskRepository.deleteById(taskId);
     }
 }
