@@ -25,28 +25,24 @@ public class TaskController {
     private TaskService taskService;
     
     @GetMapping
-    public ResponseEntity<List<Task>> getTasks(@RequestParam(defaultValue = "") String keyword){
-        return taskService.getTasksByTitle(keyword);
+    public ResponseEntity<?> getTasks(@RequestParam(defaultValue = "") String keyword, @RequestParam(defaultValue = "") String status){
+        return taskService.getTasksByTitleAndStatus(keyword, status);
     }
-    @GetMapping("/{task_id}")
+    @GetMapping("/id/{task_id}")
     public ResponseEntity<?> getTaskById(@PathVariable Long task_id){
         return taskService.getTaskById(task_id);
     }
-    @GetMapping("/status/{status}")
-    public ResponseEntity<?> getTasksByStatus(@PathVariable String status){
-        return taskService.getTasksByStatus(status);
-    }
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<String> createTask(@RequestBody TaskRequest taskRequest){
         return taskService.createTask(taskRequest);
     }
 
-    @PutMapping("/update/{task_id}")
+    @PutMapping("{task_id}")
     public ResponseEntity<String> updateTask(@PathVariable Long task_id, @RequestBody TaskRequest taskRequest){
         return taskService.updateTask(task_id, taskRequest);
     }
 
-    @DeleteMapping("/delete/{task_id}")
+    @DeleteMapping("{task_id}")
     public ResponseEntity<?> deleteTask(@PathVariable Long task_id){
         return taskService.deleteTask(task_id);
     }
