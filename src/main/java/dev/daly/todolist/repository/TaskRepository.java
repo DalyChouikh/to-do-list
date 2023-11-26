@@ -11,8 +11,7 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findTasksByTitleContains(String keyword);
-
     boolean existsByTitle(String title);
-
     List<Task> findTasksByStatus(Status status);
+    List<Task> findTasksByTitleContainsAndStatus(String keyword, Status status);
 }
