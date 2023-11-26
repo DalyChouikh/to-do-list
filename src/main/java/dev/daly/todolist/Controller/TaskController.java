@@ -40,9 +40,9 @@ public class TaskController {
         return taskService.createTask(taskRequest);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Task> updateTask(@RequestBody Task task){
-        return new ResponseEntity<>(taskService.createOrUpdateTask(task), HttpStatus.OK);
+    @PutMapping("/update/{task_id}")
+    public ResponseEntity<String> updateTask(@PathVariable Long task_id, @RequestBody TaskRequest taskRequest){
+        return taskService.updateTask(task_id, taskRequest);
     }
 
     @DeleteMapping("/delete/{task_id}")
