@@ -46,12 +46,23 @@ public class TaskService {
         }
         return new ResponseEntity<>(task.get(), HttpStatus.OK);
     }
-    public ResponseEntity<List<Task>> getTasksByTitle(String keyword){
-        return  new ResponseEntity<>(taskRepository.findTasksByTitleContains(keyword), HttpStatus.OK);
+    public ResponseEntity<?> getTasksByTitleAndStatus(String keyword, String status) {
+        if(status.isEmpty()){
+            return new ResponseEntity<>(taskRepository.findTasksByTitleContains(keyword), HttpStatus.OK);
+        }
+        Status statusEnum;
+        if(status.toLowerCase().contains("progress")){
+            statusEnum = Status.IN_PROGRESS;
+        }else if(status.toLowerCase().contains("done")) {
+            statusEnum = Status.DONE;
+        }else{
+            return new ResponseEntity<>("Invalid status. Status must be either In Progress or Done", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(taskRepository.findTasksByTitleContainsAndStatus(keyword, statusEnum), HttpStatus.OK);
     }
     public ResponseEntity<?> getTasksByStatus(String status){
         Status statusEnum;
-        if(status.toLowerCase().contains("in progress")){
+        if(status.toLowerCase().contains("progress")){
             statusEnum = Status.IN_PROGRESS;
         }else if(status.toLowerCase().contains("done")) {
             statusEnum = Status.DONE;
@@ -113,4 +124,5 @@ public class TaskService {
         }
         return null;
     }
+
 }
