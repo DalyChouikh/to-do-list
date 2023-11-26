@@ -25,8 +25,8 @@ public class TaskController {
     private TaskService taskService;
     
     @GetMapping
-    public ResponseEntity<List<Task>> getTasks(){
-        return new ResponseEntity<>(taskService.getTasks(), HttpStatus.OK);
+    public ResponseEntity<List<Task>> getTasks(@RequestParam(defaultValue = "") String keyword){
+        return new ResponseEntity<>(taskService.getTasksByTitle(keyword), HttpStatus.OK);
     }
 
     @GetMapping("/{task_id}")
