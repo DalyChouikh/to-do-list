@@ -1,6 +1,8 @@
 package dev.daly.todolist.repository;
 
+import dev.daly.todolist.models.Status;
 import dev.daly.todolist.models.Task;
+import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +13,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findTasksByTitleContains(String keyword);
 
     boolean existsByTitle(String title);
+
+    List<Task> findTasksByStatus(Status status);
 }
