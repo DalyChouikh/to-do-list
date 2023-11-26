@@ -23,22 +23,6 @@ import java.util.Optional;
 public class TaskService {
     private TaskRepository taskRepository;
 
-    public List<Task> getTasks(){
-        return taskRepository.findAll();
-    }
-
-    public ResponseEntity<?> getTaskById(Long id){
-        Optional<Task> task = taskRepository.findById(id);
-        if(task.isEmpty()){
-            return new ResponseEntity<>("Task with ID " + id + " not found", HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(task.get(), HttpStatus.OK);
-
-    }
-    public List<Task> getTasksByTitle(String keyword){
-        return  taskRepository.findTasksByTitleContains(keyword);
-    }
-
     public ResponseEntity<String> createTask(TaskRequest taskRequest){
         ResponseEntity<String> validationResponse = validateTaskRequest(taskRequest);
         if(validationResponse != null){
@@ -55,15 +39,27 @@ public class TaskService {
         taskRepository.save(task);
         return new ResponseEntity<>("Task created successfully", HttpStatus.CREATED);
     }
-
-    public ResponseEntity<String> deleteTask(Long taskId) {
-        if(!taskRepository.existsById(taskId)){
-            return new ResponseEntity<>("Task with ID " + taskId + " doesn't exist", HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> getTaskById(Long id){
+        Optional<Task> task = taskRepository.findById(id);
+        if(task.isEmpty()){
+            return new ResponseEntity<>("Task with ID " + id + " not found", HttpStatus.NOT_FOUND);
         }
-        taskRepository.deleteById(taskId);
-        return new ResponseEntity<>("Task with ID " + taskId + " deleted successfully", HttpStatus.OK);
+        return new ResponseEntity<>(task.get(), HttpStatus.OK);
     }
-
+    public ResponseEntity<List<Task>> getTasksByTitle(String keyword){
+        return  new ResponseEntity<>(taskRepository.findTasksByTitleContains(keyword), HttpStatus.OK);
+    }
+    public ResponseEntity<?> getTasksByStatus(String status){
+        Status statusEnum;
+        if(status.toLowerCase().contains("in progress")){
+            statusEnum = Status.IN_PROGRESS;
+        }else if(status.toLowerCase().contains("done")) {
+            statusEnum = Status.DONE;
+        }else{
+            return new ResponseEntity<>("Invalid status. Status must be either In Progress or Done", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(taskRepository.findTasksByStatus(statusEnum), HttpStatus.OK);
+    }
     public ResponseEntity<String> updateTask(Long taskId, TaskRequest taskRequest) {
         Optional<Task> task = taskRepository.findById(taskId);
         if(task.isEmpty()){
@@ -82,7 +78,13 @@ public class TaskService {
         taskRepository.save(task.get());
         return new ResponseEntity<>("Task with ID " + taskId + " updated successfully", HttpStatus.OK);
     }
-
+    public ResponseEntity<String> deleteTask(Long taskId) {
+        if(!taskRepository.existsById(taskId)){
+            return new ResponseEntity<>("Task with ID " + taskId + " doesn't exist", HttpStatus.NOT_FOUND);
+        }
+        taskRepository.deleteById(taskId);
+        return new ResponseEntity<>("Task with ID " + taskId + " deleted successfully", HttpStatus.OK);
+    }
     private ResponseEntity<String> validateTaskRequest(TaskRequest taskRequest) {
         LocalDate parsedDate;
         try {
@@ -90,7 +92,6 @@ public class TaskService {
         } catch (DateTimeParseException e) {
             return new ResponseEntity<>("Invalid date format. Expected format: yy-MM-dd", HttpStatus.BAD_REQUEST);
         }
-
         if(taskRequest.getTitle() == null || taskRequest.getTitle().isEmpty()){
             return new ResponseEntity<>("Title cannot be empty", HttpStatus.BAD_REQUEST);
         }
