@@ -26,14 +26,16 @@ public class TaskController {
     
     @GetMapping
     public ResponseEntity<List<Task>> getTasks(@RequestParam(defaultValue = "") String keyword){
-        return new ResponseEntity<>(taskService.getTasksByTitle(keyword), HttpStatus.OK);
+        return taskService.getTasksByTitle(keyword);
     }
-
     @GetMapping("/{task_id}")
     public ResponseEntity<?> getTaskById(@PathVariable Long task_id){
         return taskService.getTaskById(task_id);
     }
-
+    @GetMapping("/status/{status}")
+    public ResponseEntity<?> getTasksByStatus(@PathVariable String status){
+        return taskService.getTasksByStatus(status);
+    }
     @PostMapping("/create")
     public ResponseEntity<String> createTask(@RequestBody TaskRequest taskRequest){
         return taskService.createTask(taskRequest);
