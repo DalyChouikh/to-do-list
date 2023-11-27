@@ -1,22 +1,10 @@
 package dev.daly.todolist.Controller;
 
 import dev.daly.todolist.dto.TaskRequest;
-import dev.daly.todolist.dto.TaskResponse;
-import dev.daly.todolist.models.Status;
-import dev.daly.todolist.models.Task;
 import dev.daly.todolist.services.TaskService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.List;
-
 @RestController
 @RequestMapping("api/v1/tasks")
 @AllArgsConstructor
