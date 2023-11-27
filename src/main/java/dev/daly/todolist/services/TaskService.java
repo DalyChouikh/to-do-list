@@ -1,6 +1,7 @@
 package dev.daly.todolist.services;
 
 import dev.daly.todolist.dto.TaskRequest;
+import dev.daly.todolist.dto.TaskResponse;
 import dev.daly.todolist.models.Status;
 import dev.daly.todolist.models.Task;
 import dev.daly.todolist.repository.TaskRepository;
@@ -44,11 +45,24 @@ public class TaskService {
         if(task.isEmpty()){
             return new ResponseEntity<>("Task with ID " + id + " not found", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(task.get(), HttpStatus.OK);
+        TaskResponse taskResponse = buildTaskResponse(task.get());
+        return new ResponseEntity<>(taskResponse, HttpStatus.OK);
     }
+
+    private static TaskResponse buildTaskResponse(Task task) {
+        return TaskResponse.builder()
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .status(task.getStatus())
+                .dueDate(task.getDueDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .build();
+    }
+
     public ResponseEntity<?> getTasksByTitleAndStatus(String keyword, String status) {
+        List<TaskResponse> tasks;
         if(status.isEmpty()){
-            return new ResponseEntity<>(taskRepository.findTasksByTitleContains(keyword), HttpStatus.OK);
+             tasks = taskRepository.findTasksByTitleContains(keyword).stream().map(TaskService::buildTaskResponse).toList();
+            return new ResponseEntity<>(tasks, HttpStatus.OK);
         }
         Status statusEnum;
         if(status.toLowerCase().contains("progress")){
@@ -58,7 +72,8 @@ public class TaskService {
         }else{
             return new ResponseEntity<>("Invalid status. Status must be either In Progress or Done", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(taskRepository.findTasksByTitleContainsAndStatus(keyword, statusEnum), HttpStatus.OK);
+        tasks = taskRepository.findTasksByTitleContainsAndStatus(keyword, statusEnum).stream().map(TaskService::buildTaskResponse).toList();
+        return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
     public ResponseEntity<String> updateTask(Long taskId, TaskRequest taskRequest) {
         Optional<Task> task = taskRepository.findById(taskId);
