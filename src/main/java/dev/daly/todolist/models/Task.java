@@ -31,6 +31,9 @@ public class Task {
     @NonNull
     @Column(name = "due_date")
     private LocalDate dueDate;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Override
     public final boolean equals(Object o) {
