@@ -1,7 +1,9 @@
 package dev.daly.todolist.repository;
 
+import dev.daly.todolist.dto.TaskResponse;
 import dev.daly.todolist.models.Status;
 import dev.daly.todolist.models.Task;
+import dev.daly.todolist.models.User;
 import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
