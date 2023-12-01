@@ -100,12 +100,12 @@ public class TaskService {
         taskRepository.deleteById(taskId);
         return new ResponseEntity<>("Task with ID " + taskId + " deleted successfully", HttpStatus.OK);
     }
-    private ResponseEntity<String> validateTaskRequest(TaskRequest taskRequest) {
+    static ResponseEntity<String> validateTaskRequest(TaskRequest taskRequest) {
         LocalDate parsedDate;
         try {
             parsedDate = LocalDate.parse(taskRequest.getDueDate());
         } catch (DateTimeParseException e) {
-            return new ResponseEntity<>("Invalid date format. Expected format: yy-MM-dd", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Invalid date format. Expected format: yyyy-MM-dd", HttpStatus.BAD_REQUEST);
         }
         if(taskRequest.getTitle() == null || taskRequest.getTitle().isEmpty()){
             return new ResponseEntity<>("Title cannot be empty", HttpStatus.BAD_REQUEST);

@@ -1,5 +1,6 @@
 package dev.daly.todolist.Controller;
 
+import dev.daly.todolist.dto.TaskRequest;
 import dev.daly.todolist.dto.UserRequest;
 import dev.daly.todolist.services.TaskService;
 import dev.daly.todolist.services.UserService;
@@ -24,6 +25,46 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping("{username}")
+    public ResponseEntity<?> getUser(@PathVariable String username){
+        return userService.getUser(username);
+    }
+
+    @GetMapping("{username}/tasks")
+    public ResponseEntity<?> getUserTasks(@PathVariable String username){
+        return userService.getUserTasks(username);
+    }
+
+    @DeleteMapping("{username}")
+    public ResponseEntity<?> deleteUser(@PathVariable String username){
+        return userService.deleteUser(username);
+    }
+
+    @PutMapping("{username}")
+    public ResponseEntity<?> updateUser(@PathVariable String username, @RequestBody UserRequest userRequest){
+        return userService.updateUser(username, userRequest);
+    }
+
+    @GetMapping("{username}/tasks/{taskId}")
+    public ResponseEntity<?> getUserTask(@PathVariable String username, @PathVariable Long taskId){
+        return userService.getUserTask(username, taskId);
+    }
+
+    @DeleteMapping("{username}/tasks/{taskId}")
+    public ResponseEntity<?> deleteUserTask(@PathVariable String username, @PathVariable Long taskId){
+        return userService.deleteUserTask(username, taskId);
+    }
+
+    @PutMapping("{username}/tasks/{taskId}")
+    public ResponseEntity<?> updateUserTask(@PathVariable String username, @PathVariable Long taskId, @RequestBody TaskRequest taskRequest){
+        return userService.updateUserTask(username, taskId, taskRequest);
+    }
+
+    @PostMapping("{username}/tasks")
+    public ResponseEntity<?> createUserTask(@PathVariable String username, @RequestBody TaskRequest taskRequest){
+        return userService.createUserTask(username, taskRequest);
     }
 
 }
