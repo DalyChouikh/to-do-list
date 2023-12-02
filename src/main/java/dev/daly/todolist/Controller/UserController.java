@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
+@CrossOrigin
 public class UserController {
 
     private final UserService userService;
     private final TaskService taskService;
 
 
-    @PostMapping("/register")
+    @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserRequest userRequest) {
         return userService.createUser(userRequest);
     }
@@ -47,19 +48,19 @@ public class UserController {
         return userService.updateUser(username, userRequest);
     }
 
-    @GetMapping("{username}/tasks/{taskId}")
-    public ResponseEntity<?> getUserTask(@PathVariable String username, @PathVariable Long taskId){
-        return userService.getUserTask(username, taskId);
+    @GetMapping("{username}/tasks/{title}")
+    public ResponseEntity<?> getUserTask(@PathVariable String username, @PathVariable String title){
+        return userService.getUserTask(username, title);
     }
 
-    @DeleteMapping("{username}/tasks/{taskId}")
-    public ResponseEntity<?> deleteUserTask(@PathVariable String username, @PathVariable Long taskId){
-        return userService.deleteUserTask(username, taskId);
+    @DeleteMapping("{username}/tasks/{title}")
+    public ResponseEntity<?> deleteUserTask(@PathVariable String username, @PathVariable String title){
+        return userService.deleteUserTask(username, title);
     }
 
-    @PutMapping("{username}/tasks/{taskId}")
-    public ResponseEntity<?> updateUserTask(@PathVariable String username, @PathVariable Long taskId, @RequestBody TaskRequest taskRequest){
-        return userService.updateUserTask(username, taskId, taskRequest);
+    @PutMapping("{username}/tasks/{title}")
+    public ResponseEntity<?> updateUserTask(@PathVariable String username, @PathVariable String title, @RequestBody TaskRequest taskRequest){
+        return userService.updateUserTask(username, title, taskRequest);
     }
 
     @PostMapping("{username}/tasks")

@@ -16,9 +16,6 @@ import lombok.Builder;
 public class TaskResponse {
     @NonNull
     private String title;
-    private String description;
     @NonNull
     private Status status;
-    @NonNull
-    private String dueDate;
 }

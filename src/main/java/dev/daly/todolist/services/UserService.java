@@ -5,6 +5,7 @@ import dev.daly.todolist.dto.TaskRequest;
 import dev.daly.todolist.dto.TaskResponse;
 import dev.daly.todolist.dto.UserRequest;
 import dev.daly.todolist.dto.UserResponse;
+import dev.daly.todolist.models.Status;
 import dev.daly.todolist.models.Task;
 import dev.daly.todolist.models.User;
 import dev.daly.todolist.repository.TaskRepository;
@@ -101,21 +102,21 @@ public class UserService {
         return ResponseEntity.ok().body("User " + username + " does not exist");
     }
 
-    public ResponseEntity<?> getUserTask(String username, Long taskId) {
+    public ResponseEntity<?> getUserTask(String username, String title) {
         if (userRepository.existsByUsername(username)) {
             User user = userRepository.findByUsername(username);
-            Optional<Task> task = user.getTasks().stream().filter(t -> t.getId().equals(taskId)).findFirst();
+            Optional<Task> task = user.getTasks().stream().filter(t -> t.getTitle().equals(title)).findFirst();
             if (task.isPresent()) {
                 return ResponseEntity.ok().body(mapTaskToTaskResponse(task.get()));
             }
-            return ResponseEntity.ok().body("Task with ID " + taskId + " does not exist");
+            return ResponseEntity.ok().body("Task " + title + " does not exist");
         }
         return ResponseEntity.ok().body("User " + username + " does not exist");
     }
     public ResponseEntity<?> createUserTask(String username, TaskRequest taskRequest) {
         if (userRepository.existsByUsername(username)) {
             User user = userRepository.findByUsername(username);
-            ResponseEntity<String> validationResponse = TaskService.validateTaskRequest(taskRequest);
+            ResponseEntity<String> validationResponse = TaskService.validateTaskRequestInPost(taskRequest);
             if (validationResponse != null) {
                 return validationResponse;
             }
@@ -125,9 +126,7 @@ public class UserService {
             }
             Task newTask = Task.builder()
                     .title(taskRequest.getTitle())
-                    .description(taskRequest.getDescription())
-                    .status(taskRequest.getStatus())
-                    .dueDate(LocalDate.parse(taskRequest.getDueDate()))
+                    .status(Status.IN_PROGRESS)
                     .build();
             taskRepository.save(newTask);
             user.getTasks().add(newTask);
@@ -137,39 +136,38 @@ public class UserService {
         return ResponseEntity.ok().body("User " + username + " does not exist");
     }
 
-    public ResponseEntity<?> deleteUserTask(String username, Long taskId) {
+    public ResponseEntity<?> deleteUserTask(String username, String title) {
         if (userRepository.existsByUsername(username)) {
             User user = userRepository.findByUsername(username);
-            Optional<Task> task = user.getTasks().stream().filter(t -> t.getId().equals(taskId)).findFirst();
+            Optional<Task> task = user.getTasks().stream().filter(t -> t.getTitle().equals(title)).findFirst();
             if (task.isPresent()) {
                 user.getTasks().remove(task.get());
+                taskRepository.deleteById(task.get().getId());
                 userRepository.save(user);
                 return ResponseEntity.ok().body("Task " + task.get().getTitle() + " deleted successfully");
             }
-            return ResponseEntity.ok().body("Task with ID " + taskId + " does not exist");
+            return ResponseEntity.ok().body("Task " + title  + " does not exist");
         }
         return ResponseEntity.ok().body("User " + username + " does not exist");
     }
 
-    public ResponseEntity<?> updateUserTask(String username, Long taskId, TaskRequest taskRequest) {
+    public ResponseEntity<?> updateUserTask(String username, String title, TaskRequest taskRequest) {
         if (userRepository.existsByUsername(username)) {
             User user = userRepository.findByUsername(username);
-            Optional<Task> task = user.getTasks().stream().filter(t -> t.getId().equals(taskId)).findFirst();
+            Optional<Task> task = user.getTasks().stream().filter(t -> t.getTitle().equals(title)).findFirst();
             if (task.isPresent()) {
-                ResponseEntity<String> validationResponse = TaskService.validateTaskRequest(taskRequest);
+                ResponseEntity<String> validationResponse = TaskService.validateTaskRequestInPut(taskRequest);
                 if (validationResponse != null) {
                     return validationResponse;
                 } else if (user.getTasks().stream().anyMatch(t -> t.getTitle().equalsIgnoreCase(taskRequest.getTitle())) && !task.get().getTitle().equals(taskRequest.getTitle())) {
                     return ResponseEntity.badRequest().body("Task with title " + taskRequest.getTitle() + " already exists");
                 }
                 task.get().setTitle(taskRequest.getTitle());
-                task.get().setDescription(taskRequest.getDescription());
                 task.get().setStatus(taskRequest.getStatus());
-                task.get().setDueDate(LocalDate.parse(taskRequest.getDueDate()));
                 taskRepository.save(task.get());
                 return ResponseEntity.ok().body("Task " + taskRequest.getTitle() + " updated successfully");
             }
-            return ResponseEntity.ok().body("Task with ID " + taskId + " does not exist");
+            return ResponseEntity.ok().body("Task " + title + " does not exist");
         }
         return ResponseEntity.ok().body("User " + username + " does not exist");
     }
@@ -183,9 +181,7 @@ public class UserService {
     private TaskResponse mapTaskToTaskResponse(Task task) {
         return TaskResponse.builder()
                 .title(task.getTitle())
-                .description(task.getDescription())
                 .status(task.getStatus())
-                .dueDate(task.getDueDate().toString())
                 .build();
     }
 }

@@ -13,9 +13,6 @@ import java.time.LocalDate;
 public class TaskRequest {
     @NonNull
     private String title;
-    private String description;
     @NonNull
     private Status status;
-    @NonNull
-    private String dueDate;
 }
