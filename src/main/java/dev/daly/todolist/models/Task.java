@@ -22,16 +22,10 @@ public class Task {
     @NonNull
     @Column(nullable = false)
     private String title;
-    @Column(nullable = true)
-    private String description;
     @NonNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
-    @NonNull
-    @Column(name = "due_date")
-    private LocalDate dueDate;
-
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
