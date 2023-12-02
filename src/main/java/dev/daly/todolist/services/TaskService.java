@@ -25,7 +25,7 @@ public class TaskService {
     private TaskRepository taskRepository;
 
     public ResponseEntity<String> createTask(TaskRequest taskRequest){
-        ResponseEntity<String> validationResponse = validateTaskRequest(taskRequest);
+        ResponseEntity<String> validationResponse = validateTaskRequestInPost(taskRequest);
         if(validationResponse != null){
             return validationResponse;
         } else if(taskRepository.existsByTitle(taskRequest.getTitle())){
@@ -33,9 +33,7 @@ public class TaskService {
         }
         Task task = Task.builder()
                 .title(taskRequest.getTitle())
-                .description(taskRequest.getDescription())
                 .status(taskRequest.getStatus())
-                .dueDate(LocalDate.parse(taskRequest.getDueDate()))
                 .build();
         taskRepository.save(task);
         return new ResponseEntity<>("Task created successfully", HttpStatus.CREATED);
@@ -52,9 +50,7 @@ public class TaskService {
     private static TaskResponse buildTaskResponse(Task task) {
         return TaskResponse.builder()
                 .title(task.getTitle())
-                .description(task.getDescription())
                 .status(task.getStatus())
-                .dueDate(task.getDueDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .build();
     }
 
@@ -80,16 +76,14 @@ public class TaskService {
         if(task.isEmpty()){
             return new ResponseEntity<>("Task with ID " + taskId + " doesn't exist", HttpStatus.NOT_FOUND);
         }
-        ResponseEntity<String> validationResponse = validateTaskRequest(taskRequest);
+        ResponseEntity<String> validationResponse = validateTaskRequestInPut(taskRequest);
         if(validationResponse != null){
             return validationResponse;
         }else if(taskRepository.existsByTitle(taskRequest.getTitle()) && !task.get().getTitle().equals(taskRequest.getTitle())){
             return new ResponseEntity<>("Task with title " + taskRequest.getTitle() + " already exists", HttpStatus.BAD_REQUEST);
         }
         task.get().setTitle(taskRequest.getTitle());
-        task.get().setDescription(taskRequest.getDescription());
         task.get().setStatus(taskRequest.getStatus());
-        task.get().setDueDate(LocalDate.parse(taskRequest.getDueDate()));
         taskRepository.save(task.get());
         return new ResponseEntity<>("Task with ID " + taskId + " updated successfully", HttpStatus.OK);
     }
@@ -100,31 +94,18 @@ public class TaskService {
         taskRepository.deleteById(taskId);
         return new ResponseEntity<>("Task with ID " + taskId + " deleted successfully", HttpStatus.OK);
     }
-    static ResponseEntity<String> validateTaskRequest(TaskRequest taskRequest) {
-        LocalDate parsedDate;
-        try {
-            parsedDate = LocalDate.parse(taskRequest.getDueDate());
-        } catch (DateTimeParseException e) {
-            return new ResponseEntity<>("Invalid date format. Expected format: yyyy-MM-dd", HttpStatus.BAD_REQUEST);
-        }
+    static ResponseEntity<String> validateTaskRequestInPut(TaskRequest taskRequest) {
         if(taskRequest.getTitle() == null || taskRequest.getTitle().isEmpty()){
             return new ResponseEntity<>("Title cannot be empty", HttpStatus.BAD_REQUEST);
         }
-        else if(taskRequest.getDueDate() == null || taskRequest.getDueDate().isEmpty()){
-            return new ResponseEntity<>("Due date cannot be empty", HttpStatus.BAD_REQUEST);
-        }
-        else if(taskRequest.getStatus() == null){
-            return new ResponseEntity<>("Status cannot be empty", HttpStatus.BAD_REQUEST);
-        } else if (taskRequest.getStatus() != Status.IN_PROGRESS && taskRequest.getStatus() != Status.DONE) {
+        else if (taskRequest.getStatus() != Status.IN_PROGRESS && taskRequest.getStatus() != Status.DONE) {
             return new ResponseEntity<>("Status must be either In Progress or Done", HttpStatus.BAD_REQUEST);
-        } else if(parsedDate.isBefore(LocalDate.now())){
-            return new ResponseEntity<>("Due date cannot be in the past", HttpStatus.BAD_REQUEST);
         }
-        else if (taskRequest.getStatus() == Status.DONE && parsedDate.isAfter(LocalDate.now())){
-            return new ResponseEntity<>("Due date cannot be in the future if status is done", HttpStatus.BAD_REQUEST);
-        }
-        else if (taskRequest.getStatus() == Status.IN_PROGRESS && parsedDate.isBefore(LocalDate.now())){
-            return new ResponseEntity<>("Due date cannot be in the past if status is in progress", HttpStatus.BAD_REQUEST);
+        return null;
+    }
+    static ResponseEntity<String> validateTaskRequestInPost(TaskRequest taskRequest) {
+        if(taskRequest.getTitle() == null || taskRequest.getTitle().isEmpty()){
+            return new ResponseEntity<>("Title cannot be empty", HttpStatus.BAD_REQUEST);
         }
         return null;
     }
