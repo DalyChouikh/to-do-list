@@ -1,6 +1,7 @@
 package dev.daly.todolist.dto;
 
 import dev.daly.todolist.models.Status;
+import jakarta.annotation.Nullable;
 import lombok.NonNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +17,6 @@ import lombok.Builder;
 public class TaskResponse {
     @NonNull
     private String title;
-    @NonNull
+    @Nullable
     private Status status;
 }

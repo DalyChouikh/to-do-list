@@ -1,5 +1,6 @@
 package dev.daly.todolist.models;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -22,7 +23,7 @@ public class Task {
     @NonNull
     @Column(nullable = false)
     private String title;
-    @NonNull
+    @Nullable
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;

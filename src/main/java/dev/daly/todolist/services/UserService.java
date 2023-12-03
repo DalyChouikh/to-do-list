@@ -163,7 +163,8 @@ public class UserService {
                     return ResponseEntity.badRequest().body("Task with title " + taskRequest.getTitle() + " already exists");
                 }
                 task.get().setTitle(taskRequest.getTitle());
-                task.get().setStatus(taskRequest.getStatus());
+                if(taskRequest.getStatus() != null)
+                    task.get().setStatus(taskRequest.getStatus());
                 taskRepository.save(task.get());
                 return ResponseEntity.ok().body("Task " + taskRequest.getTitle() + " updated successfully");
             }

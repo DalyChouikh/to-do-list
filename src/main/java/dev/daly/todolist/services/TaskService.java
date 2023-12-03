@@ -98,7 +98,7 @@ public class TaskService {
         if(taskRequest.getTitle() == null || taskRequest.getTitle().isEmpty()){
             return new ResponseEntity<>("Title cannot be empty", HttpStatus.BAD_REQUEST);
         }
-        else if (taskRequest.getStatus() != Status.IN_PROGRESS && taskRequest.getStatus() != Status.DONE) {
+        else if (taskRequest.getStatus() != null && taskRequest.getStatus() != Status.IN_PROGRESS && taskRequest.getStatus() != Status.DONE) {
             return new ResponseEntity<>("Status must be either In Progress or Done", HttpStatus.BAD_REQUEST);
         }
         return null;
